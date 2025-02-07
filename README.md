@@ -1,38 +1,65 @@
-# Library
-PHP Library Basic CRUD NO API
-Written from little knowledge and asking AI
-There may be some errors that you can fix yourself.
+PHP Library Management System (Basic CRUD)
+A simple role-based library system without API integration
 
-SET CONFIG 
-1 Path private/check_db.php and private/connect.php  Set your Database
-2 Import file sql in database
+🔧 Setup Instructions
+Database Configuration
 
+Edit private/check_db.php and private/connect.php with your database credentials
 
-Read ME
-- you can set role admin only in database
-- chang password You cannot change the password in the database
-- Please give permission to write in the book folder.
+Import provided SQL file to your database
 
-admin 
-- add book 
-- manage book
-- manage user you can set user role moderator/user , chang information user , delete user   //you can't update or delete user role == admin 
-- update personal information in profile
-- see history borrow But if you delete a book or user, the borrowing history will be deleted.
-- manage borrowed/returned books
-- you can borroow book 
-- you can see status borrow book 
+File Permissions
 
-moderator  //It's like admin but can't manage users.
-- add book 
-- manage book
-- update personal information in profile
-- see history borrow But if you delete a book or user, the borrowing history will be deleted.
-- manage borrowed/returned books
-- you can borroow book 
-- you can see status borrow book 
+Grant write permissions to the book/ directory for file uploads
 
-user
-- you can borroow book 
-- you can see status borrow book 
-- update personal information in profile
+Initial Access
+
+Admin account is configured through database (set role = 'admin')
+
+Passwords cannot be changed via direct database edits
+
+👨💻 Role Permissions
+Administrator
+
+📚 Book Management: Add/Edit/Delete books
+
+👥 User Management: Edit roles (moderator/user), update profiles, delete users
+(Cannot modify other admin accounts)
+
+📖 Borrowing System: Process loans/returns, view borrowing history
+
+⚙️ Personal Profile: Update own information
+
+Moderator
+
+📚 Book Management: Add/Edit/Delete books
+
+📖 Borrowing System: Process loans/returns, view borrowing history
+(No user management access)
+
+⚙️ Personal Profile: Update own information
+
+Regular User
+
+🔍 Browse & Borrow: Request books, view loan status
+
+⚙️ Personal Profile: Update own information
+
+⚠️ Important Notes
+Data Integrity
+
+Deleting books/users will erase associated borrowing history
+
+Admin accounts can only be modified through direct database edits
+
+Security
+
+Password changes must use system interface (not via database)
+
+Implement additional server-side validation as needed
+
+Error Handling
+
+Check PHP error logs for debugging
+
+Verify database connection settings if issues occur
