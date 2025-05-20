@@ -3,10 +3,10 @@ session_start();
 
 require_once __DIR__ . '/../connect.php';
 
-if (isset($_POST['cancle'])) {
+if (isset($_POST['cancel'])) {
     if(!empty($_POST['history_id'])){
         $history_id = $connect->real_escape_string($_POST['history_id']);
-        $sql = "UPDATE history SET status = 'cancle' WHERE history_id = '$history_id'";
+        $sql = "UPDATE history SET status = 'cancel' WHERE history_id = '$history_id'";
         $result = $connect->query($sql);
         if($result){
             echo "suscess";

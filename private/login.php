@@ -41,7 +41,7 @@ if (isset($_POST['login'])) {
                 }
                } else {
                 // echo "โดนแบน";
-                $_SESSION['alert'] = "unsuccess";
+                $_SESSION['alert'] = "banned";
                 header('Location: ../public/login.php');
                 exit();
                }

@@ -1,7 +1,7 @@
 <?php
     session_start();
-    require_once __DIR__ . '/../../private/connect.php';  // เชื่อมต่อฐานข้อมูล
-    require_once __DIR__ . '/check.php'; // เช็คสิทธิ์
+    require_once __DIR__ . '/../../private/connect.php';
+    require_once __DIR__ . '/check.php';
     include_once __DIR__ . '/../asset/header/header-moderator.php';
 
     $sql = "SELECT * FROM user WHERE user_id = {$_SESSION['user_id']}";
@@ -9,60 +9,146 @@
     $row = $result->fetch_assoc();
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Profile Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div>
-        <form action="../../private/moderator/profile.php" method="post">
-            <div>
-                <div>
-                    <label for="std_id">Student id</label>
-                    <input type="text" name="std_id" id="std_id" disabled value="<?= !empty($row['std_id']) ? htmlspecialchars($row['std_id']) : '' ?>" >
-                </div>
-                <div>
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" disabled value="<?= !empty($row['username']) ? htmlspecialchars($row['username']) : '' ?>" >
-                </div>
-                <div>
-                    <label for="password">Change password</label>
-                    <input type="password" name="new_password" id="password" placeholder="New Password" >
-                    <input type="password" name="confirm_password" placeholder="Confirm Password" >
-                </div>
-                <div>
-                    <label for="f_name">First name</label>
-                    <input type="text" name="f_name" id="f_name" value="<?= !empty($row['f_name']) ? htmlspecialchars($row['f_name']) : '' ?>" >
-                </div>
-                <div>
-                    <label for="l_name">Last name</label>
-                    <input type="text" name="l_name" id="l_name" value="<?= !empty($row['l_name']) ? htmlspecialchars($row['l_name']) : '' ?>" >
-                </div>
-                <div>
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value="<?= !empty($row['email']) ? htmlspecialchars($row['email']) : '' ?>" >
-                </div>
-                <div>
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" placeholder="Password">
-                </div>
-                <div>
-                    <button type="submit" name="update">Update</button>
-                </div>
+<body class="bg-gray-50 min-h-screen p-0">
+    <div class="max-w-2xl mx-auto">
+        <div class="card bg-white shadow-lg rounded-lg">
+            <div class="card-body">
+                <h1 class="card-title text-2xl mb-6">Profile Settings</h1>
+                
+                <form action="../../private/moderator/profile.php" method="post">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Read-only Fields -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Student ID</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="input input-bordered bg-gray-100"
+                                value="<?= htmlspecialchars($row['std_id'] ?? '') ?>" 
+                                disabled
+                            >
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Username</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="input input-bordered bg-gray-100"
+                                value="<?= htmlspecialchars($row['username'] ?? '') ?>" 
+                                disabled
+                            >
+                        </div>
+
+                        <!-- Editable Fields -->
+                        <div class="form-control md:col-span-2">
+                            <label class="label">
+                                <span class="label-text">First Name</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="f_name" 
+                                class="input input-bordered"
+                                value="<?= htmlspecialchars($row['f_name'] ?? '') ?>"
+                            >
+                        </div>
+
+                        <div class="form-control md:col-span-2">
+                            <label class="label">
+                                <span class="label-text">Last Name</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="l_name" 
+                                class="input input-bordered"
+                                value="<?= htmlspecialchars($row['l_name'] ?? '') ?>"
+                            >
+                        </div>
+
+                        <div class="form-control md:col-span-2">
+                            <label class="label">
+                                <span class="label-text">Email</span>
+                            </label>
+                            <input 
+                                type="email" 
+                                name="email" 
+                                class="input input-bordered"
+                                value="<?= htmlspecialchars($row['email'] ?? '') ?>"
+                            >
+                        </div>
+
+                        <!-- Password Change Section -->
+                        <div class="md:col-span-2 border-t pt-4 mt-4">
+                            <h2 class="text-lg font-semibold mb-4">Change Password</h2>
+                            
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Current Password</span>
+                                </label>
+                                <input 
+                                    type="password" 
+                                    name="password" 
+                                    class="input input-bordered"
+                                    placeholder="Enter current password"
+                                    required
+                                >
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">New Password</span>
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        name="new_password" 
+                                        class="input input-bordered"
+                                        placeholder="New password"
+                                    >
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Confirm Password</span>
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        name="confirm_password" 
+                                        class="input input-bordered"
+                                        placeholder="Confirm new password"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-control md:col-span-2 mt-6">
+                            <button 
+                                type="submit" 
+                                name="update" 
+                                class="btn btn-primary w-full"
+                            >
+                                Update Profile
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
-
-
-
-
-
-<?php
+    <?php
     if(!empty($_SESSION['alert'])){
         switch($_SESSION['alert']){
             case 'success':
@@ -74,9 +160,7 @@
                 unset($_SESSION['alert']);
                 break;
         } 
-
     }
-// $connect->close();
-?>
+    ?>
 </body>
 </html>

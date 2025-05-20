@@ -1,130 +1,245 @@
 <?php 
 session_start();
+require_once __DIR__ . '/../../private/connect.php';
+require_once __DIR__ . '/check.php';
+include_once __DIR__ . '/../asset/header/header-admin.php';
 
-    require_once __DIR__ . '/../../private/connect.php';
-    require_once __DIR__ . '/check.php';
-    include_once __DIR__ . '/../asset/header/header-admin.php';
-
-    $sql = "SELECT * FROM book";
-    if (!empty($_GET['search']) && !empty($_GET['type'])) {
-        $search = $connect->real_escape_string($_GET['search']);
-        $type = $connect->real_escape_string($_GET['type']);
-        $sql .= " WHERE $type LIKE '%$search%' ";
-    }
-    $sql .= " ORDER BY book_id DESC";
-
-    $result = $connect->query($sql);
-    if (!$result) {
-        die("Query failed: " . $connect->error);
-    }
-
+$sql = "SELECT * FROM book";
+if (!empty($_GET['search']) && !empty($_GET['type'])) {
+    $search = $connect->real_escape_string($_GET['search']);
+    $type = $connect->real_escape_string($_GET['type']);
+    $sql .= " WHERE $type LIKE '%$search%' ";
+}
+$sql .= " ORDER BY book_id DESC";
+$result = $connect->query($sql);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage_book</title>
+    <title>Book Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    
-    <div>
-        <form action="" method="get">
-            <div>
-                <input type="search" name="search" placeholder="search" value="<?= !empty($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-                <select name="type">
-                    <option value="book_name" <?= !empty($_GET['type']) && $_GET['type'] == 'book_name' ? 'selected' : '' ?>>Book Name</option>
-                    <option value="book_category" <?= !empty($_GET['type']) && $_GET['type'] == 'book_category' ? 'selected' : '' ?>>Book Category</option>
-                    <option value="book_stock" <?= !empty($_GET['type']) && $_GET['type'] == 'book_stock' ? 'selected' : '' ?>>Book Stock</option>
-                    <option value="book_status" <?= !empty($_GET['type']) && $_GET['type'] == 'book_status' ? 'selected' : '' ?>>Book Status</option>
-                </select>
-                <button type="submit">Search</button>
+<body class="bg-gray-50 min-h-screen p-0">
+    <div class="max-w-7xl mx-auto">
+        <!-- Search Form -->
+        <div class="mb-8">
+            <form action="" method="get" class="bg-white p-4 rounded-lg shadow">
+                <div class="join flex flex-col md:flex-row gap-2 w-full">
+                    <input 
+                        type="search" 
+                        name="search" 
+                        placeholder="Search books..." 
+                        class="input input-bordered join-item w-full"
+                        value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                    >
+                    <select 
+                        name="type" 
+                        class="select select-bordered join-item md:w-64"
+                    >
+                        <option value="book_name" <?= selected('book_name') ?>>Book Name</option>
+                        <option value="book_category" <?= selected('book_category') ?>>Category</option>
+                        <option value="book_stock" <?= selected('book_stock') ?>>Stock</option>
+                        <option value="book_status" <?= selected('book_status') ?>>Status</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary join-item">
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Add Book Form -->
+        <div class="card bg-white shadow-lg mb-8">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Add New Book</h2>
+                <form action="../../private/admin/manage_book.php" method="post" enctype="multipart/form-data">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Book Cover</span>
+                            </label>
+                            <input 
+                                type="file" 
+                                name="book_image" 
+                                class="file-input file-input-bordered"
+                                accept=".jpg, .jpeg, .png, .gif"
+                            >
+                        </div>
+                        
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Book Name</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="book_name" 
+                                class="input input-bordered"
+                                placeholder="Enter book name"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-control md:col-span-2">
+                            <label class="label">
+                                <span class="label-text">Description</span>
+                            </label>
+                            <textarea 
+                                name="description" 
+                                class="textarea textarea-bordered h-24"
+                                placeholder="Enter description"
+                            ></textarea>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Category</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="book_category" 
+                                class="input input-bordered"
+                                placeholder="Enter category"
+                            >
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Stock</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                name="book_stock" 
+                                class="input input-bordered"
+                                placeholder="Enter stock quantity"
+                                min="0"
+                            >
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Status</span>
+                            </label>
+                            <select name="book_status" class="select select-bordered">
+                                <option value="enable">Enable</option>
+                                <option value="disable">Disable</option>
+                            </select>
+                        </div>
+
+                        <div class="form-control md:col-span-2 mt-4">
+                            <button type="submit" name="add" class="btn btn-primary w-full">
+                                Add Book
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+
+        <!-- Books Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <?php if ($result->num_rows > 0): ?>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <div class="card bg-white shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="card-body">
+                            <form action="../../private/admin/manage_book.php" method="post" enctype="multipart/form-data">
+                                <!-- Book Image -->
+                                <figure class="mb-4">
+                                    <img 
+                                        src="../asset/book/<?= !empty($row['book_image']) ? htmlspecialchars($row['book_image']) : 'default.png' ?>" 
+                                        alt="Book Cover" 
+                                        class="w-full h-48 object-cover rounded-lg"
+                                    >
+                                </figure>
+
+                                <input type="hidden" name="book_id" value="<?= htmlspecialchars($row['book_id']) ?>">
+                                
+                                <div class="space-y-4">
+                                    <!-- File Upload -->
+                                    <div class="form-control">
+                                        <input 
+                                            type="file" 
+                                            name="book_image" 
+                                            class="file-input file-input-bordered file-input-sm"
+                                        >
+                                    </div>
+
+                                    <!-- Book Details -->
+                                    <div class="form-control">
+                                        <input 
+                                            type="text" 
+                                            name="book_name" 
+                                            class="input input-bordered input-sm"
+                                            value="<?= htmlspecialchars($row['book_name']) ?>"
+                                            placeholder="book name"
+                                        >
+                                    </div>
+
+                                    <div class="form-control">
+                                        <input 
+                                            type="text" 
+                                            name="description" 
+                                            class="input input-bordered input-sm"
+                                            value="<?= htmlspecialchars($row['description']) ?>"
+                                            placeholder="description"
+                                        >
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="form-control">
+                                            <input 
+                                                type="text" 
+                                                name="book_category" 
+                                                class="input input-bordered input-sm"
+                                                value="<?= htmlspecialchars($row['book_category']) ?>"
+                                                placeholder="category"
+                                            >
+                                        </div>
+
+                                        <div class="form-control">
+                                            <input 
+                                                type="number" 
+                                                name="book_stock" 
+                                                class="input input-bordered input-sm"
+                                                value="<?= htmlspecialchars($row['book_stock']) ?>"
+                                                placeholder="stock"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-control">
+                                        <select name="book_status" class="select select-bordered select-sm">
+                                            <option value="enable" <?= $row['book_status'] == 'enable' ? 'selected' : '' ?>>Enable</option>
+                                            <option value="disable" <?= $row['book_status'] == 'disable' ? 'selected' : '' ?>>Disable</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex gap-2 mt-4">
+                                        <button type="submit" name="update" class="btn btn-success btn-sm flex-1">
+                                            Update
+                                        </button>
+                                        <!-- <button type="submit" name="delete" class="btn btn-error btn-sm flex-1">
+                                            Delete
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <div class="col-span-full text-center py-8">
+                    <p class="text-gray-500">No books found</p>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 
-
-    <div>
-        <form action="../../private/admin/manage_book.php" method="post" enctype="multipart/form-data">
-            <div>   
-            <div>
-                <input type="file" name="book_image" accept=".jpg, .jpeg, .png, .gif">
-            </div>
-            <div>
-                <input type="text" name="book_name"  placeholder="Book Name">
-            </div>
-            <div>
-                <input type="text" name="description"  placeholder="Description">
-            </div>
-            <div>
-                <input type="text" name="book_category"  placeholder="Book category">
-            </div>
-            <div>
-                <input type="number" name="book_stock"  placeholder="Book Stock">
-            </div>
-            <div>
-                <select name="book_status" >
-                    <option value="enable">Enable</option>
-                    <option value="disable">Disable</option>
-                </select>
-            </div>
-            <div>
-                <button type="submit" name="add">Add</button>
-            </div>
-            </div>
-        </form>
-    </div>
-
-
-
-    <div>
-
-    <?php 
-    if ($rows = $result->fetch_all(MYSQLI_ASSOC)) {
-        foreach ($rows as $row) {?>
-            <div>
-            <form action="../../private/admin/manage_book.php" method="post" enctype="multipart/form-data" >
-                <div>
-            <img src="<?= htmlspecialchars('../asset/book/' . (!empty($row['book_image']) ? $row['book_image'] : 'default')) ?>" alt="Book Image">
-            </div>
-            <div>
-            <input type="file" name="book_image" >    
-            </div>
-            <div>
-                <input type="hidden" name="book_id" value="<?= !empty($row['book_id']) ? htmlspecialchars($row['book_id']) : '' ?>">
-            <input type="text" name="book_name"  value="<?= !empty($row['book_name']) ? htmlspecialchars($row['book_name']) : "don't have data" ?>">
-            </div>
-            <div>
-                <input type="text" name="description"  value="<?= !empty($row['description']) ? htmlspecialchars($row['description']) : "don't have data" ?>">
-            </div>
-            <div>
-            <input type="text" name="book_category"  value="<?= !empty($row['book_category']) ? htmlspecialchars($row['book_category']) : "don't have data" ?>">
-            </div>
-            <div>
-            <input type="number" name="book_stock"  value="<?= !empty($row['book_stock']) ? htmlspecialchars($row['book_stock']) : "don't have data" ?>">
-            </div>
-            <div>
-                <select name="book_status">
-                    <option value="enable" <?= !empty($row['book_status']) && $row['book_status'] == "enable" ? 'selected' : '' ?>>Enable</option>
-                    <option value="disable" <?= !empty($row['book_status']) && $row['book_status'] == "disable" ? 'selected' : '' ?>>Disable</option>
-                </select>
-            </div>
-            <div>
-                <button type="submit" name="update">Update</button>
-                <button type="submit" name="delete">Delete</button>
-            </div>
-        </form>
-            </div>
-            <?php
-        }
-    }
-
-    ?>
-
-    </div>
-
-<?php
+    <?php
     if(!empty($_SESSION['alert'])){
         switch($_SESSION['alert']){
             case 'success':
@@ -136,9 +251,14 @@ session_start();
                 unset($_SESSION['alert']);
                 break;
         } 
-
     }
     $connect->close();
     ?>
 </body>
 </html>
+
+<?php
+function selected($type) {
+    return (!empty($_GET['type']) && $_GET['type'] == $type) ? 'selected' : '';
+}
+?>

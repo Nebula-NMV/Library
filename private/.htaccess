@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # อนุญาตให้รับเฉพาะ POST requests
+    RewriteCond %{REQUEST_METHOD} !POST
+    RewriteRule ^ - [F]
+</IfModule>

@@ -47,30 +47,30 @@
     }
 
 
-if(isset($_POST['delete'])) {
-    if(!empty($_POST['user_id'])){
+// if(isset($_POST['delete'])) {
+//     if(!empty($_POST['user_id'])){
 
-        $user_id = $connect->real_escape_string($_POST['user_id']);
-        $sql = "DELETE FROM user WHERE user_id = '$user_id'";
-        if($connect->query($sql)){
-            echo "success";
-            $_SESSION['alert'] = "success";
-            header("Location: ../../public/admin/manage_user.php");
-            exit();
-        }else{
-            echo "unsuccess";
-            $_SESSION['alert'] = "unsuccess";
-            header("Location: ../../public/admin/manage_user.php");
-            exit();
-        }
-        }else{
-            echo "unsuccess";
-            $_SESSION['alert'] = "unsuccess";
-            header("Location: ../../public/admin/manage_user.php");
-            exit();
-    }
+//         $user_id = $connect->real_escape_string($_POST['user_id']);
+//         $sql = "DELETE FROM user WHERE user_id = '$user_id'";
+//         if($connect->query($sql)){
+//             echo "success";
+//             $_SESSION['alert'] = "success";
+//             header("Location: ../../public/admin/manage_user.php");
+//             exit();
+//         }else{
+//             echo "unsuccess";
+//             $_SESSION['alert'] = "unsuccess";
+//             header("Location: ../../public/admin/manage_user.php");
+//             exit();
+//         }
+//         }else{
+//             echo "unsuccess";
+//             $_SESSION['alert'] = "unsuccess";
+//             header("Location: ../../public/admin/manage_user.php");
+//             exit();
+//     }
 
-}
+// }
 
 
 

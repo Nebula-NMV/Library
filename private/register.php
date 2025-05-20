@@ -14,7 +14,7 @@ if (isset($_POST['register'])) {
             $email = $connect->real_escape_string($_POST['email']);
             
             if (!is_numeric($std_id)) {
-                $_SESSION['alert'] = "unsuccess";
+                $_SESSION['alert'] = "not_number";
                 header('Location: ../public/register.php');
                 exit();
             }
@@ -37,13 +37,13 @@ if (isset($_POST['register'])) {
                 while ($row = $result->fetch_assoc()) {
                     if ($row['email'] == $email) {
                         // echo "มี email แล้ว";
-                        $_SESSION['alert'] = "unsuccess";
+                        $_SESSION['alert'] = "have_email";
                         header('Location: ../public/register.php');
                         exit();
                     }
                     if ($row['std_id'] == $std_id) {
                         // echo "มี student_id แล้ว";
-                        $_SESSION['alert'] = "unsuccess";
+                        $_SESSION['alert'] = "have_studentID";
                         header('Location: ../public/register.php');
                         exit();
                     }
